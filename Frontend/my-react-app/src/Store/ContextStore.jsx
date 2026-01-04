@@ -1,0 +1,28 @@
+import { createContext } from "react";
+
+const ContextStore = createContext({
+  handleLoginState: () => {},
+  activeUser: ``,
+  setActiveUser: () => {},
+  handleSignupState: ``,
+  acessDetail: ``,
+  defaultCatogery: ``,
+  loggedIn: ``,
+  setLoggedIn: () => {},
+  modalStatus: ``,
+  setModalStatus: () => {},
+  userCatogery: ``,
+  setUserCatogery: () => {},
+  incomeData: ``,
+  setIncomeData: () => {},
+  ExpenceData: ``,
+  setExpenceData: () => {},
+  setUserInput: () => {},
+  UserInput: ``,
+  setRefreshData: () => {},
+  setAddCatogery: () => {},
+  activeMonth: ``,
+  setActiveMonth: () => {},
+});
+
+export default ContextStore;

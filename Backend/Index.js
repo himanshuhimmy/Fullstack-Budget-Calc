@@ -28,6 +28,7 @@ app.post(`/add/user`, async (req, resp) => {
   let data = new usersModel(req.body);
   let result = data.save();
   resp.send(result);
+  console.log(result);
 });
 
 app.put(`/editUser/:id`, async (req, resp) => {
@@ -39,18 +40,16 @@ app.put(`/editUser/:id`, async (req, resp) => {
 // ! for Categorys
 
 app.get(`/get/category`, async (req, resp) => {
-  let data = await CategoryModel.find();
+  let data = await CategoryModel.find({ custom: false });
   resp.send(data);
 });
 
 app.get(`/get/userCategory/:id`, async (req, resp) => {
-  let data = await CategoryModel.find({ userId: req.params.id }).populate(
-    "userId"
-  );
+  let data = await CategoryModel.find({ userId: req.params.id });
   resp.send(data);
 });
 
-app.post(`/add/category/:id`, async (req, resp) => {
+app.post(`/add/category`, async (req, resp) => {
   let data = new CategoryModel(req.body);
   let result = data.save();
   resp.send(result);
@@ -87,6 +86,7 @@ app.post(`/add/expenceEntry`, async (req, resp) => {
   let data = new ExpenceModel(req.body);
   let result = data.save();
   resp.send(result);
+  console.log(result);
 });
 
 app.delete(`/delete/expenceEntry/:id`, async (req, resp) => {
