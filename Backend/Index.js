@@ -86,7 +86,7 @@ app.post(`/add/expenceEntry`, async (req, resp) => {
   let data = new ExpenceModel(req.body);
   let result = data.save();
   resp.send(result);
-  console.log(result);
+  console.log(req.body);
 });
 
 app.delete(`/delete/expenceEntry/:id`, async (req, resp) => {

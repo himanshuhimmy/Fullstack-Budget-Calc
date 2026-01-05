@@ -13,6 +13,10 @@ const CalcualtionContainer = () => {
     modalStatus,
     setAddCatogery,
     setActiveMonth,
+    filteredIncome,
+    filteredExpence,
+    incomeData,
+    ExpenceData,
     activeMonth,
   } = useContext(ContextStore);
 
@@ -20,6 +24,31 @@ const CalcualtionContainer = () => {
     setModalStatus(!modalStatus);
     setAddCatogery(true);
   }
+
+  let [totalIncome, setTotalIncome] = useState(0);
+  let [totalExpense, setTotaExpense] = useState(0);
+  let [totalBudget, setTotalBudget] = useState(0);
+
+  useEffect(() => {
+    let incomeTotal = 0;
+    let expenseTotal = 0;
+
+    if (filteredIncome) {
+      filteredIncome.forEach((el) => {
+        incomeTotal += Number(el.amount);
+      });
+    }
+
+    if (filteredExpence) {
+      filteredExpence.forEach((el) => {
+        expenseTotal += Number(el.amount);
+      });
+    }
+
+    setTotalIncome(incomeTotal);
+    setTotaExpense(expenseTotal);
+    setTotalBudget(incomeTotal - expenseTotal);
+  }, [filteredIncome, filteredExpence, activeMonth]);
 
   let [check, setCheck] = useState(true);
   function handleCheck(value) {
@@ -73,9 +102,25 @@ const CalcualtionContainer = () => {
       </h1>
 
       <div className="text-center w-[40%] m-auto ">
-        <h1 className="text-4xl p-4"> 00</h1>
-        <p className="p-5 bg-green-400 mb-4">Income 00 </p>
-        <p className="p-5 bg-red-400 mb-4">Expence 00 </p>
+        <h1
+          className={`text-4xl p-4 ${
+            totalBudget > 0 ? `text-green-600` : `text-red-600`
+          }`}
+        >
+          {totalBudget}
+        </h1>
+        <p className="p-5 bg-green-400 mb-4 flex justify-around">
+          <p>INCOME</p>
+          <label className="text-green-900 text-xl font-bold">
+            + {totalIncome}
+          </label>
+        </p>
+        <p className="p-5 bg-red-400 mb-4 flex justify-around">
+          <p>EXPENSE</p>
+          <label className="text-red-700 text-xl font-bold">
+            - {totalExpense}
+          </label>
+        </p>
       </div>
 
       <div className="flex justify-center p-5">

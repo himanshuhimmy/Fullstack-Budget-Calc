@@ -34,6 +34,22 @@ function App() {
 
   const [acessDetail, setAcessDetail] = useState(null);
 
+  let [filteredIncome, setFilteredIncome] = useState(null);
+  let [filteredExpence, setFilteredExpence] = useState(null);
+
+  useEffect(() => {
+    setFilteredIncome(
+      incomeData
+        ? incomeData.filter((el) => el.date.slice(0, 7) === activeMonth)
+        : []
+    );
+    setFilteredExpence(
+      ExpenceData
+        ? ExpenceData.filter((el) => el.date.slice(0, 7) === activeMonth)
+        : []
+    );
+  }, [activeMonth, UserInput, incomeData, ExpenceData]);
+
   useEffect(() => {
     let data = async () => {
       let response = await axios.get(`http://localhost:3000/get/allUsers`);
@@ -210,6 +226,8 @@ function App() {
     setAddCatogery,
     activeMonth,
     setActiveMonth,
+    filteredExpence,
+    filteredIncome,
   };
 
   return (

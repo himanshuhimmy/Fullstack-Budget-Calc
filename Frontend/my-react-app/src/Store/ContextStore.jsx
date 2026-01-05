@@ -23,6 +23,8 @@ const ContextStore = createContext({
   setAddCatogery: () => {},
   activeMonth: ``,
   setActiveMonth: () => {},
+  filteredExpence: ``,
+  filteredIncome: ``,
 });
 
 export default ContextStore;

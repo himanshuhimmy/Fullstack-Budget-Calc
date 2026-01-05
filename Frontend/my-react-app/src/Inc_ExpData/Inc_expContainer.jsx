@@ -3,7 +3,7 @@ import ContextStore from "../Store/ContextStore";
 import axios from "axios";
 
 const Inc_expContainer = () => {
-  let { incomeData, ExpenceData, setRefreshData, activeMonth, UserInput } =
+  let { setRefreshData, filteredExpence, filteredIncome } =
     useContext(ContextStore);
 
   async function deleteIncomeEntry(id) {
@@ -15,25 +15,6 @@ const Inc_expContainer = () => {
     await axios.delete(`http://localhost:3000/delete/expenceEntry/${id}`);
     setRefreshData((prev) => prev + 1);
   }
-
-  let [filteredIncome, setFilteredIncome] = useState(null);
-  let [filteredExpence, setFilteredExpence] = useState(null);
-
-  useEffect(() => {
-    setFilteredIncome(
-      incomeData
-        ? incomeData.filter((el) => el.date.slice(0, 7) === activeMonth)
-        : []
-    );
-
-    setFilteredExpence(
-      ExpenceData
-        ? ExpenceData.filter((el) => el.date.slice(0, 7) === activeMonth)
-        : []
-    );
-  }, [activeMonth, UserInput, incomeData, ExpenceData]);
-  console.log(incomeData);
-  console.log(filteredExpence);
 
   return (
     <div className="flex w-full justify-between mt-2 ml-2 bg-teal-200 rounded-l-2xl h-1/2">
