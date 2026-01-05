@@ -183,10 +183,6 @@ const CalcualtionContainer = () => {
             </select>
           </div>
 
-          {/* <input
-            onChange={(e) => onChangeAddData(e.target.value, `date`)}
-            type="date"
-          /> */}
           <button
             className="bg-teal-700 text-white px-4 py-1 rounded-3xl"
             onClick={PostData}
