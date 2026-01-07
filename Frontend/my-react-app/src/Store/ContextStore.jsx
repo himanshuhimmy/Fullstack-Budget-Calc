@@ -25,6 +25,11 @@ const ContextStore = createContext({
   setActiveMonth: () => {},
   filteredExpence: ``,
   filteredIncome: ``,
+  checkCat: ``,
+  setCheckCat: () => {},
+  errors: ``,
+  setErrors: () => {},
+  refresdData: ``,
 });
 
 export default ContextStore;

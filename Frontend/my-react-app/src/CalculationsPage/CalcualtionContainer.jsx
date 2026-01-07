@@ -15,9 +15,9 @@ const CalcualtionContainer = () => {
     setActiveMonth,
     filteredIncome,
     filteredExpence,
-    incomeData,
-    ExpenceData,
     activeMonth,
+    loggedIn,
+    refresdData,
   } = useContext(ContextStore);
 
   function HandleModalStatus() {
@@ -60,21 +60,26 @@ const CalcualtionContainer = () => {
         check ? el.type === "income" : el.type === "expense"
       )
     : [];
+  let [filteredCat2, setFilteredCat2] = useState(``);
 
-  const filteredCat2 = useMemo(() => {
-    return (userCatogery ?? []).filter((el) =>
+  useEffect(() => {
+    let data = (userCatogery ?? []).filter((el) =>
       check ? el.type === "income" : el.type === "expense"
     );
-  }, [userCatogery, check]);
+    setFilteredCat2(data);
+  }, [userCatogery, check, refresdData]);
 
+  // !issue date
   function onChangeAddData(value, field) {
-    const now = new Date();
-    const iso = now.toISOString();
+    const [year, month] = activeMonth.split("-").map(Number);
+
+    const mongoDate = new Date(Date.UTC(year, month - 1, 1));
+
     setUserInput((prev) => ({
       ...prev,
       [field]: value,
       userId: activeUser._id,
-      date: iso,
+      date: mongoDate,
     }));
   }
 
@@ -95,8 +100,9 @@ const CalcualtionContainer = () => {
 
     return setUserInput(null);
   }
+
   return (
-    <div className="bg-teal-100 mt-2 ml-2 rounded-l-2xl h-3/6">
+    <div className="bg-teal-100 mt-2 ml-2 rounded-l-2xl p-4">
       <h1 className="pt-2 text-center text-2xl text-teal-700  font-semibold">
         Month Budget
       </h1>
@@ -125,8 +131,9 @@ const CalcualtionContainer = () => {
 
       <div className="flex justify-center p-5">
         <button
+          disabled={!loggedIn}
           onClick={HandleModalStatus}
-          className="px-2 py-1 bg-teal-500 mx-3 rounded-2xl hover:bg-teal-700 transition-all duration-300 hover:text-white"
+          className="px-2 py-1 bg-teal-500 mx-3 rounded-2xl hover:bg-teal-700 transition-all duration-300 hover:text-white disabled:bg-teal-300 disabled:cursor-not-allowed disabled:text-black"
         >
           Add Catogery
         </button>
@@ -134,41 +141,46 @@ const CalcualtionContainer = () => {
       <hr></hr>
       <div className="flex flex-col items-center">
         <p className="mb-2 font-medium">Select Month</p>
-        <input onChange={(e) => OnChangeMonth(e.target.value)} type="month" />
+        <input
+          disabled={!loggedIn}
+          className="disabled:cursor-not-allowed"
+          onChange={(e) => OnChangeMonth(e.target.value)}
+          type="month"
+        />
       </div>
 
       <div className="">
         <div className="flex justify-between ">
           <input
-            className="bg-teal-200 p-2 rounded-2xl"
+            className="bg-teal-200 p-2 rounded-2xl disabled:cursor-not-allowed"
             type="number"
             placeholder="Amount"
+            value={UserInput?.amount ?? ""}
+            disabled={!loggedIn}
             onChange={(e) => onChangeAddData(e.target.value, `amount`)}
           />
           <div>
             <p className="mb-2 font-medium">Select Catogery</p>
             <select
-              onChange={(e) => onChangeAddData(e.target.value, `categoryId`)}
-              className="p-2 bg-teal-400 rounded-xl"
+              value={UserInput?.categoryId ?? ""}
+              onChange={(e) => onChangeAddData(e.target.value, "categoryId")}
+              disabled={!loggedIn}
+              className="p-2 bg-teal-400 rounded-xl disabled:cursor-not-allowed"
             >
-              {filteredCat.map((el) => {
-                return (
-                  <option key={el._id ?? el.name} value={el._id}>
+              <option className="text-white" value="">
+                Select category
+              </option>
+
+              {filteredCat.map((el) => (
+                <option value={el._id}>{el.name}</option>
+              ))}
+
+              {filteredCat2 !== `` &&
+                filteredCat2.map((el) => (
+                  <option className="text-white" value={el._id}>
                     {el.name}
                   </option>
-                );
-              })}
-              {filteredCat2.map((el) => {
-                return (
-                  <option
-                    className="text-white"
-                    key={el._id ?? el.name}
-                    value={el._id}
-                  >
-                    {el.name}
-                  </option>
-                );
-              })}
+                ))}
             </select>
           </div>
 
@@ -176,7 +188,8 @@ const CalcualtionContainer = () => {
             <p className="mb-2 font-medium">Select Type </p>
             <select
               onChange={(e) => handleCheck(e.target.value === "true")}
-              className="p-2 bg-teal-400 rounded-xl"
+              disabled={!loggedIn}
+              className="p-2 bg-teal-400 rounded-xl disabled:cursor-not-allowed"
             >
               <option value="true">+</option>
               <option value="false">-</option>
@@ -184,7 +197,8 @@ const CalcualtionContainer = () => {
           </div>
 
           <button
-            className="bg-teal-700 text-white px-4 py-1 rounded-3xl"
+            disabled={!loggedIn}
+            className="bg-teal-700 text-white px-4 py-1 rounded-3xl disabled:cursor-not-allowed"
             onClick={PostData}
           >
             Add

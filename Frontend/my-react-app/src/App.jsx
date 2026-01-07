@@ -10,6 +10,19 @@ import ModalBox from "./Resuable/ModalBox";
 import AddCatogery from "./CalculationsPage/AddCatogery";
 
 function App() {
+  // !for validation
+  const [errors, setErrors] = useState({
+    username: "",
+    password: "",
+    name: ``,
+  });
+  const [sinupData, setSignUpData] = useState({
+    username: "",
+    password: "",
+    name: ``,
+  });
+  const [checkCat, setCheckCat] = useState({ name: `` });
+
   const [activeUser, setActiveUser] = useState({
     _id: {
       $oid: "6956027a09a38f3e3332fb63",
@@ -94,7 +107,6 @@ function App() {
       setIncomeData(response.data);
     };
     data();
-    console.log(`refreshed income`);
   }, [activeUser, refresdData]);
 
   useEffect(() => {
@@ -110,7 +122,6 @@ function App() {
       setExpenceData(response.data);
     };
     data();
-    console.log(`refreshed expence`);
   }, [activeUser, refresdData]);
 
   function handleLoginState() {
@@ -136,24 +147,90 @@ function App() {
     if (field === "password") setPassword(value);
   }
 
-  function ConfimLogin() {
-    if (acessDetail !== null) {
-      acessDetail.map((el) => {
-        if (el.username === username && el.password === password) {
-          setActiveUser(el);
-          setModalStatus(false);
-          setLoggedIn(true);
-          setLoginModal(false);
-        }
-      });
+  const ValidateLogin = () => {
+    let valid = true;
+    const newErrors = { username: "", password: "" };
+
+    if (!username.trim()) {
+      newErrors.username = "Username is required";
+      valid = false;
     }
+
+    if (!password) {
+      newErrors.password = "Password is required";
+      valid = false;
+    } else if (password.length < 4) {
+      newErrors.password = "Password must be at least 4 characters";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  function ConfimLogin() {
+    if (!ValidateLogin()) return;
+
+    const user = acessDetail.find(
+      (el) => el.username === username && el.password === password
+    );
+
+    if (!user) {
+      setErrors((prev) => ({
+        ...prev,
+        username: "Invalid username or password",
+      }));
+      return;
+    }
+
+    setActiveUser(user);
+    setModalStatus(false);
+    setLoggedIn(true);
+    setLoginModal(false);
   }
+
+  const ValidateSignIn = () => {
+    let validate = true;
+    const newErrors = { username: "", password: "", name: `` };
+
+    if (sinupData?.name === ``) {
+      newErrors.name = `name Required`;
+      validate = false;
+    }
+    if (sinupData?.name.length < 2) {
+      newErrors.name = `name Too short`;
+      validate = false;
+    }
+
+    if (sinupData?.username === ``) {
+      newErrors.username = `Username Required`;
+      validate = false;
+    }
+    if (sinupData?.username.length < 4) {
+      newErrors.username = `Username Too short`;
+      validate = false;
+    }
+    if (sinupData?.password === ``) {
+      newErrors.password = `Password Required`;
+      validate = false;
+    }
+    if (sinupData?.password.length < 4) {
+      newErrors.password = `password Too short`;
+      validate = false;
+    }
+    setErrors(newErrors);
+    return validate;
+  };
 
   function signUpOnchange(value, field) {
     setUserInput((prev) => ({ ...prev, [field]: value }));
+    setSignUpData((prev) => ({ ...prev, [field]: value }));
   }
 
   async function ConfirmSignup() {
+    if (!ValidateSignIn()) {
+      return;
+    }
     if (UserInput !== null) {
       await axios.post(`http://localhost:3000/add/user`, UserInput);
       console.log(`clicked`);
@@ -228,6 +305,11 @@ function App() {
     setActiveMonth,
     filteredExpence,
     filteredIncome,
+    checkCat,
+    setCheckCat,
+    errors,
+    setErrors,
+    refresdData,
   };
 
   return (
@@ -254,6 +336,11 @@ function App() {
                             signUpOnchange(e.target.value, `name`)
                           }
                         />
+                        {errors.name && (
+                          <p className="text-red-600 font-normal">
+                            {errors.name}
+                          </p>
+                        )}
                         <label htmlFor=""> Your User Name</label>
                         <input
                           className="bg-teal-100 p-2 rounded-xl my-2"
@@ -263,6 +350,11 @@ function App() {
                             signUpOnchange(e.target.value, `username`)
                           }
                         />
+                        {errors.username && (
+                          <p className="text-red-600 font-normal ">
+                            {errors.username}
+                          </p>
+                        )}
                         <label htmlFor="">Password</label>
                         <input
                           className="bg-teal-100 p-2 rounded-xl my-2"
@@ -272,6 +364,11 @@ function App() {
                             signUpOnchange(e.target.value, `password`)
                           }
                         />
+                        {errors.password && (
+                          <p className="text-red-600 font-normal">
+                            {errors.password}
+                          </p>
+                        )}
                         <div className="flex justify-around mt-3">
                           <button onClick={ConfirmSignup}> Signup</button>
                           <button onClick={handleSignupState}>Cancel </button>
@@ -291,6 +388,11 @@ function App() {
                             onChangeLogin(e.target.value, `username`)
                           }
                         />
+                        {errors.username && (
+                          <p className="text-red-600 font-normal ">
+                            {errors.username}
+                          </p>
+                        )}
                         <input
                           className="bg-teal-100 p-2 rounded-xl my-2"
                           type="password"
@@ -299,6 +401,11 @@ function App() {
                             onChangeLogin(e.target.value, `password`)
                           }
                         />
+                        {errors.password && (
+                          <p className="text-red-600 font-normal">
+                            {errors.password}
+                          </p>
+                        )}
                         <div className="flex justify-around mt-3">
                           <button onClick={ConfimLogin}> Confirm </button>
                           <button onClick={handleLoginState}>Cancel </button>
