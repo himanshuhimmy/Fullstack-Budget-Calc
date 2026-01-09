@@ -32,7 +32,6 @@ app.post(`/add/user`, async (req, resp) => {
 });
 
 app.put(`/editUser/:id`, async (req, resp) => {
-  console.log(req.params);
   let data = await usersModel.updateOne(
     { _id: req.params.id },
     { $set: req.body }
@@ -102,6 +101,14 @@ app.post(`/add/expenceEntry`, async (req, resp) => {
 
 app.delete(`/delete/expenceEntry/:id`, async (req, resp) => {
   let data = await ExpenceModel.deleteOne({ _id: req.params.id });
+  resp.send(data);
+});
+
+app.put(`/update/expenseEntry/:id`, async (req, resp) => {
+  let data = await ExpenceModel.updateOne(
+    { _id: req.params.id },
+    { $set: req.body }
+  );
   resp.send(data);
 });
 

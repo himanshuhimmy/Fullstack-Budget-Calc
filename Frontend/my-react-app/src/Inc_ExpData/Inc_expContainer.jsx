@@ -3,8 +3,19 @@ import ContextStore from "../Store/ContextStore";
 import axios from "axios";
 
 const Inc_expContainer = () => {
-  let { setRefreshData, filteredExpence, filteredIncome } =
-    useContext(ContextStore);
+  let {
+    setRefreshData,
+    filteredExpence,
+    filteredIncome,
+    setUserInput,
+    UserInput,
+  } = useContext(ContextStore);
+
+  let [editToggle, setEditToggle] = useState(false);
+  let [currentId, setCurrentId] = useState(``);
+  const [editing, setEditing] = useState({
+    amount: "",
+  });
 
   async function deleteIncomeEntry(id) {
     await axios.delete(`http://localhost:3000/delete/incomeEntry/${id}`);
@@ -16,6 +27,26 @@ const Inc_expContainer = () => {
     setRefreshData((prev) => prev + 1);
   }
 
+  function handleOnchangeEdit(value, field) {
+    setEditing({ amount: value });
+    setUserInput((prev) => ({ ...prev, [field]: value }));
+  }
+
+  async function handleEdit(id, field, amount) {
+    if (!editToggle) {
+      setCurrentId(id);
+      setEditToggle(true);
+      setEditing({ amount: amount });
+      return;
+    }
+
+    const type = field === "income" ? "incomeEntry" : "expenseEntry";
+
+    await axios.put(`http://localhost:3000/update/${type}/${id}`, UserInput);
+
+    setUserInput({});
+    setEditToggle(false);
+  }
   return (
     <div className="flex w-full justify-between mt-2 ml-2 bg-teal-200 rounded-l-2xl h-1/2">
       <div className="w-[50%] mt-3">
@@ -41,15 +72,38 @@ const Inc_expContainer = () => {
                         {data.categoryId.name}
                       </td>
                       <td className="text-center px-2 py-1 text-green-800 font-semibold ">
-                        + {data.amount}
+                        +
+                        {editToggle && data._id === currentId ? (
+                          <input
+                            className="bg-teal-400 p-1 rounded-2xl"
+                            onChange={(e) =>
+                              handleOnchangeEdit(e.target.value, `amount`)
+                            }
+                            value={editing.amount}
+                          ></input>
+                        ) : (
+                          data.amount
+                        )}
                       </td>
-                      <td className="text-center px-2 py-1">
+                      <td className="text-center px-2 py-1 flex justify-center">
                         <button
-                          onClick={() => deleteIncomeEntry(data._id)}
-                          className="text-white hover:underline bg-red-400 px-3 py-2 rounded-xl hover:bg-red-600 transition-all duration-300"
+                          onClick={() =>
+                            handleEdit(data._id, `income`, data.amount)
+                          }
+                          className="mx-2 text-white hover:underline bg-green-400 px-3 py-2 rounded-xl hover:bg-green-600 transition-all duration-300"
                         >
-                          Delete
+                          {editToggle && data._id === currentId
+                            ? `Done`
+                            : `Edit`}
                         </button>
+                        {!editToggle && (
+                          <button
+                            onClick={() => deleteIncomeEntry(data._id)}
+                            className="text-white hover:underline bg-red-400 px-3 py-2 rounded-xl hover:bg-red-600 transition-all duration-300"
+                          >
+                            Delete
+                          </button>
+                        )}
                       </td>
                     </tr>
                   );
@@ -80,15 +134,36 @@ const Inc_expContainer = () => {
                         {data.categoryId.name}
                       </td>
                       <td className="text-center px-2 py-1 font-semibold text-red-400 ">
-                        - {data.amount}
+                        -
+                        {editToggle && data._id === currentId ? (
+                          <input
+                            className="bg-teal-400 p-1 rounded-2xl"
+                            onChange={(e) =>
+                              handleOnchangeEdit(e.target.value, `amount`)
+                            }
+                            value={editing.amount}
+                          ></input>
+                        ) : (
+                          data.amount
+                        )}
                       </td>
-                      <td className="text-center px-2 py-1">
+                      <td className="text-center px-2 py-1 flex justify-center">
                         <button
-                          onClick={() => deleteExpenceEntry(data._id)}
-                          className="text-white hover:underline bg-red-400 px-3 py-2 rounded-xl hover:bg-red-600 transition-all duration-300"
+                          onClick={() => handleEdit(data._id, `expense`)}
+                          className="mx-2 text-white hover:underline bg-green-400 px-3 py-2 rounded-xl hover:bg-green-600 transition-all duration-300"
                         >
-                          Delete
+                          {editToggle && data._id === currentId
+                            ? `Done`
+                            : `Edit`}
                         </button>
+                        {!editToggle && (
+                          <button
+                            onClick={() => deleteExpenceEntry(data._id)}
+                            className="text-white hover:underline bg-red-400 px-3 py-2 rounded-xl hover:bg-red-600 transition-all duration-300"
+                          >
+                            Delete
+                          </button>
+                        )}
                       </td>
                     </tr>
                   );

@@ -30,6 +30,19 @@ const ContextStore = createContext({
   errors: ``,
   setErrors: () => {},
   refresdData: ``,
+  handleLoginState: () => {},
+  ConfimLogin: () => {},
+  onChangeLogin: () => {},
+  errors: ``,
+  signUpOnchange: () => {},
+  ConfirmSignup: () => {},
+  handelpass: () => {},
+  handleOLdPAss: () => {},
+  ValidPass: () => {},
+  totalIncome: ``,
+  setTotalIncome: () => {},
+  totalExpense: ``,
+  setTotaExpense: () => {},
 });
 
 export default ContextStore;

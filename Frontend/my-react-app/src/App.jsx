@@ -8,6 +8,13 @@ import Inc_expContainer from "./Inc_ExpData/Inc_expContainer";
 import CalcualtionContainer from "./CalculationsPage/CalcualtionContainer";
 import ModalBox from "./Resuable/ModalBox";
 import AddCatogery from "./CalculationsPage/AddCatogery";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import AppRoutes from "./Router/Routes";
+import ChangePAssWord from "./Pages/ChangePAssWord";
+import LoginPage from "./Pages/LoginPage";
+import SignupPage from "./Pages/SignupPage";
+import DashBoard from "./DashBoard";
+import Pie_Charts from "./Resuable/Pie_Charts";
 
 function App() {
   // !for validation
@@ -23,19 +30,12 @@ function App() {
   });
   const [checkCat, setCheckCat] = useState({ name: `` });
 
-  const [activeUser, setActiveUser] = useState({
-    _id: {
-      $oid: "6956027a09a38f3e3332fb63",
-    },
-    name: "himanshu",
-    username: "himmy",
-    password: "$2b$10$exampleHashForHimanshu",
-  });
+  const [activeUser, setActiveUser] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [signUp, setSignUp] = useState(false);
+  const [changePass, setChangePass] = useState(false);
   const [modalStatus, setModalStatus] = useState(false);
   const [addCatogery, setAddCatogery] = useState(false);
-  const [loginModal, setLoginModal] = useState(false);
+
   const [refresdData, setRefreshData] = useState(0);
   const [activeMonth, setActiveMonth] = useState(false);
 
@@ -49,6 +49,9 @@ function App() {
 
   let [filteredIncome, setFilteredIncome] = useState(null);
   let [filteredExpence, setFilteredExpence] = useState(null);
+
+  let [totalIncome, setTotalIncome] = useState(0);
+  let [totalExpense, setTotaExpense] = useState(0);
 
   useEffect(() => {
     setFilteredIncome(
@@ -130,13 +133,6 @@ function App() {
       setLoggedIn(false);
       return;
     }
-    setLoginModal(!loginModal);
-    setModalStatus(!modalStatus);
-  }
-
-  function handleSignupState() {
-    setSignUp(!signUp);
-    setModalStatus(!modalStatus);
   }
 
   const [username, setUsername] = useState("");
@@ -184,11 +180,9 @@ function App() {
     }
 
     setActiveUser(user);
-    setModalStatus(false);
     setLoggedIn(true);
-    setLoginModal(false);
   }
-
+  console.log(activeUser);
   const ValidateSignIn = () => {
     let validate = true;
     const newErrors = { username: "", password: "", name: `` };
@@ -235,8 +229,6 @@ function App() {
       await axios.post(`http://localhost:3000/add/user`, UserInput);
       console.log(`clicked`);
       setUserInput(null);
-      setModalStatus(!modalStatus);
-      setSignUp(!signUp);
     }
   }
 
@@ -280,11 +272,34 @@ function App() {
     data();
   }, [loggedIn, UserInput]);
 
+  function handelpass() {
+    setChangePass(!changePass);
+    setModalStatus(!modalStatus);
+    setUserInput(null);
+  }
+
+  function handleOLdPAss(value, field) {
+    let data = false;
+    if (field === `old`) {
+      activeUser !== null && activeUser.password === value
+        ? (data = true)
+        : (data = false);
+    }
+    if (field === `password`) {
+      if (activeUser !== null && activeUser.password === value) {
+        errors.password = `new And old PAssword cannot be same`;
+      }
+
+      setUserInput((prev) => ({ ...prev, [field]: value }));
+    }
+
+    return data;
+  }
+
   let value = {
     handleLoginState,
     activeUser,
     setActiveUser,
-    handleSignupState,
     acessDetail,
     defaultCatogery,
     loggedIn,
@@ -310,7 +325,42 @@ function App() {
     errors,
     setErrors,
     refresdData,
+    ConfimLogin,
+    onChangeLogin,
+    signUpOnchange,
+    ConfirmSignup,
+    handelpass,
+    handleOLdPAss,
+    totalIncome,
+    setTotalIncome,
+    totalExpense,
+    setTotaExpense,
   };
+
+  // <div>
+  //   <div className="w-[20%]">
+  //     <SidebarContaner />
+  //   </div>
+  //   <div className="w-[80%]">
+  //     <CalcualtionContainer />
+  //     <Inc_expContainer />
+  //   </div>
+  // </div>;
+
+  // let router = createBrowserRouter([
+  //   {
+  //     path: `/Login`,
+  //     element: <LoginPage />,
+  //   },
+  //   {
+  //     path: `/Signup`,
+  //     element: <SignupPage />,
+  //   },
+  //   {
+  //     path: `/DashBoard`,
+  //     element: <DashBoard />,
+  //   },
+  // ]);
 
   return (
     <>
@@ -318,114 +368,30 @@ function App() {
         <ContextStore.Provider value={value}>
           <HeadBar />
           <div className="flex w-full">
-            {(modalStatus || signUp) && (
+            {modalStatus && (
               <ModalBox>
-                {modalStatus && (
-                  <>
-                    {signUp && (
-                      <div className="flex flex-col p-4 m-5">
-                        <h1 className="text-xl text-white text-center mb-3 font-semibold">
-                          Details
-                        </h1>
-                        <label htmlFor=""> Your Name</label>
-                        <input
-                          className="bg-teal-100 p-2 rounded-xl my-2"
-                          type="text"
-                          placeholder="Name"
-                          onChange={(e) =>
-                            signUpOnchange(e.target.value, `name`)
-                          }
-                        />
-                        {errors.name && (
-                          <p className="text-red-600 font-normal">
-                            {errors.name}
-                          </p>
-                        )}
-                        <label htmlFor=""> Your User Name</label>
-                        <input
-                          className="bg-teal-100 p-2 rounded-xl my-2"
-                          type="text"
-                          placeholder="Username"
-                          onChange={(e) =>
-                            signUpOnchange(e.target.value, `username`)
-                          }
-                        />
-                        {errors.username && (
-                          <p className="text-red-600 font-normal ">
-                            {errors.username}
-                          </p>
-                        )}
-                        <label htmlFor="">Password</label>
-                        <input
-                          className="bg-teal-100 p-2 rounded-xl my-2"
-                          type="password"
-                          placeholder="password"
-                          onChange={(e) =>
-                            signUpOnchange(e.target.value, `password`)
-                          }
-                        />
-                        {errors.password && (
-                          <p className="text-red-600 font-normal">
-                            {errors.password}
-                          </p>
-                        )}
-                        <div className="flex justify-around mt-3">
-                          <button onClick={ConfirmSignup}> Signup</button>
-                          <button onClick={handleSignupState}>Cancel </button>
-                        </div>
-                      </div>
-                    )}
-                    {loginModal && (
-                      <div className="flex flex-col p-4">
-                        <h1 className="text-xl text-white text-center mb-3 font-semibold">
-                          Login
-                        </h1>
-                        <input
-                          className="bg-teal-100 p-2 rounded-xl my-2"
-                          type="text"
-                          placeholder="Username"
-                          onChange={(e) =>
-                            onChangeLogin(e.target.value, `username`)
-                          }
-                        />
-                        {errors.username && (
-                          <p className="text-red-600 font-normal ">
-                            {errors.username}
-                          </p>
-                        )}
-                        <input
-                          className="bg-teal-100 p-2 rounded-xl my-2"
-                          type="password"
-                          placeholder="password"
-                          onChange={(e) =>
-                            onChangeLogin(e.target.value, `password`)
-                          }
-                        />
-                        {errors.password && (
-                          <p className="text-red-600 font-normal">
-                            {errors.password}
-                          </p>
-                        )}
-                        <div className="flex justify-around mt-3">
-                          <button onClick={ConfimLogin}> Confirm </button>
-                          <button onClick={handleLoginState}>Cancel </button>
-                        </div>
-                      </div>
-                    )}
-
-                    {addCatogery === true && <AddCatogery />}
-                  </>
-                )}
+                <>
+                  {addCatogery === true && <AddCatogery />}
+                  {changePass === true && <ChangePAssWord />}
+                </>
               </ModalBox>
             )}
-            <div className="w-[20%]">
-              <SidebarContaner />
-            </div>
-            <div className="w-[80%]">
-              <CalcualtionContainer />
-              <Inc_expContainer />
-            </div>
+            {loggedIn ? (
+              <>
+                <div className="w-[20%]">
+                  <SidebarContaner />
+                </div>
+                <div className="w-[80%]">
+                  <CalcualtionContainer />
+                  <Inc_expContainer />
+                </div>
+              </>
+            ) : (
+              <AppRoutes />
+            )}
+            {/* <RouterProvider router={router} /> */}
           </div>
+          <Pie_Charts />
         </ContextStore.Provider>
       </div>
     </>

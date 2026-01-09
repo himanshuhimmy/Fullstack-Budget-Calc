@@ -18,6 +18,10 @@ const CalcualtionContainer = () => {
     activeMonth,
     loggedIn,
     refresdData,
+    totalIncome,
+    setTotalIncome,
+    totalExpense,
+    setTotaExpense,
   } = useContext(ContextStore);
 
   function HandleModalStatus() {
@@ -25,8 +29,8 @@ const CalcualtionContainer = () => {
     setAddCatogery(true);
   }
 
-  let [totalIncome, setTotalIncome] = useState(0);
-  let [totalExpense, setTotaExpense] = useState(0);
+  // let [totalIncome, setTotalIncome] = useState(0);
+  // let [totalExpense, setTotaExpense] = useState(0);
   let [totalBudget, setTotalBudget] = useState(0);
 
   useEffect(() => {
@@ -69,7 +73,6 @@ const CalcualtionContainer = () => {
     setFilteredCat2(data);
   }, [userCatogery, check, refresdData]);
 
-  // !issue date
   function onChangeAddData(value, field) {
     const [year, month] = activeMonth.split("-").map(Number);
 
