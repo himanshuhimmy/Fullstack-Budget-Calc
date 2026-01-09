@@ -182,7 +182,6 @@ function App() {
     setActiveUser(user);
     setLoggedIn(true);
   }
-  console.log(activeUser);
   const ValidateSignIn = () => {
     let validate = true;
     const newErrors = { username: "", password: "", name: `` };
@@ -391,7 +390,7 @@ function App() {
             )}
             {/* <RouterProvider router={router} /> */}
           </div>
-          <Pie_Charts />
+          {/* <Pie_Charts /> */}
         </ContextStore.Provider>
       </div>
     </>

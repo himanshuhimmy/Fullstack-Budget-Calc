@@ -2,6 +2,7 @@ import { useContext } from "react";
 import ContextStore from "../Store/ContextStore";
 import { useState } from "react";
 import { useEffect } from "react";
+import { NavLink } from "react-router-dom";
 
 const SidebarContaner = () => {
   let { incomeData, ExpenceData, setActiveMonth, activeMonth, loggedIn } =
@@ -29,7 +30,9 @@ const SidebarContaner = () => {
   return (
     <div className="w-full mt-2 bg-teal-700 rounded-r-2xl  h-dvh text-center">
       <h1 className="pt-4 text-3xl text-white mb-3"> Months </h1>
-
+      <NavLink to={`/Pie`} className=" text-teal-300 hover:text-teal-400">
+        View Pie Diagram
+      </NavLink>
       <div>
         {years !== null &&
           loggedIn &&

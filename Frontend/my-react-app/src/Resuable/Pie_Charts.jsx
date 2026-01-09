@@ -8,7 +8,7 @@ const Pie_Charts = () => {
   return (
     <div className="w-[60%] bg-teal-300 m-2 p-4 rounded-4xl">
       <h1 className="text-center mb-2 text-2xl font-medium">Chart</h1>
-
+      {console.log(`rendered pie`)}
       <PieChart
         colors={["red", "blue", "green"]}
         series={[

@@ -29,8 +29,6 @@ const CalcualtionContainer = () => {
     setAddCatogery(true);
   }
 
-  // let [totalIncome, setTotalIncome] = useState(0);
-  // let [totalExpense, setTotaExpense] = useState(0);
   let [totalBudget, setTotalBudget] = useState(0);
 
   useEffect(() => {
@@ -148,6 +146,7 @@ const CalcualtionContainer = () => {
           disabled={!loggedIn}
           className="disabled:cursor-not-allowed"
           onChange={(e) => OnChangeMonth(e.target.value)}
+          value={activeMonth}
           type="month"
         />
       </div>
