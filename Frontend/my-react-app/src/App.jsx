@@ -8,7 +8,12 @@ import Inc_expContainer from "./Inc_ExpData/Inc_expContainer";
 import CalcualtionContainer from "./CalculationsPage/CalcualtionContainer";
 import ModalBox from "./Resuable/ModalBox";
 import AddCatogery from "./CalculationsPage/AddCatogery";
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Outlet,
+  RouterProvider,
+  useNavigate,
+} from "react-router-dom";
 import AppRoutes from "./Router/Routes";
 import ChangePAssWord from "./Pages/ChangePAssWord";
 import LoginPage from "./Pages/LoginPage";
@@ -52,6 +57,28 @@ function App() {
 
   let [totalIncome, setTotalIncome] = useState(0);
   let [totalExpense, setTotaExpense] = useState(0);
+  let [totalBudget, setTotalBudget] = useState(0);
+
+  useEffect(() => {
+    let incomeTotal = 0;
+    let expenseTotal = 0;
+
+    if (filteredIncome) {
+      filteredIncome.forEach((el) => {
+        incomeTotal += Number(el.amount);
+      });
+    }
+
+    if (filteredExpence) {
+      filteredExpence.forEach((el) => {
+        expenseTotal += Number(el.amount);
+      });
+    }
+
+    setTotalIncome(incomeTotal);
+    setTotaExpense(expenseTotal);
+    setTotalBudget(incomeTotal - expenseTotal);
+  }, [filteredIncome, filteredExpence, activeMonth]);
 
   useEffect(() => {
     setFilteredIncome(
@@ -164,6 +191,7 @@ function App() {
     return valid;
   };
 
+  const navigate = useNavigate();
   function ConfimLogin() {
     if (!ValidateLogin()) return;
 
@@ -181,6 +209,8 @@ function App() {
 
     setActiveUser(user);
     setLoggedIn(true);
+
+    navigate("/dashboard", { replace: true });
   }
   const ValidateSignIn = () => {
     let validate = true;
@@ -226,7 +256,6 @@ function App() {
     }
     if (UserInput !== null) {
       await axios.post(`http://localhost:3000/add/user`, UserInput);
-      console.log(`clicked`);
       setUserInput(null);
     }
   }
@@ -294,7 +323,7 @@ function App() {
 
     return data;
   }
-
+  console.log(totalExpense, totalIncome);
   let value = {
     handleLoginState,
     activeUser,
@@ -334,63 +363,26 @@ function App() {
     setTotalIncome,
     totalExpense,
     setTotaExpense,
+    totalBudget,
+    setTotalBudget,
   };
-
-  // <div>
-  //   <div className="w-[20%]">
-  //     <SidebarContaner />
-  //   </div>
-  //   <div className="w-[80%]">
-  //     <CalcualtionContainer />
-  //     <Inc_expContainer />
-  //   </div>
-  // </div>;
-
-  // let router = createBrowserRouter([
-  //   {
-  //     path: `/Login`,
-  //     element: <LoginPage />,
-  //   },
-  //   {
-  //     path: `/Signup`,
-  //     element: <SignupPage />,
-  //   },
-  //   {
-  //     path: `/DashBoard`,
-  //     element: <DashBoard />,
-  //   },
-  // ]);
 
   return (
     <>
       <div className="">
         <ContextStore.Provider value={value}>
+          {modalStatus && (
+            <ModalBox>
+              <>
+                {addCatogery === true && <AddCatogery />}
+                {changePass === true && <ChangePAssWord />}
+              </>
+            </ModalBox>
+          )}
           <HeadBar />
           <div className="flex w-full">
-            {modalStatus && (
-              <ModalBox>
-                <>
-                  {addCatogery === true && <AddCatogery />}
-                  {changePass === true && <ChangePAssWord />}
-                </>
-              </ModalBox>
-            )}
-            {loggedIn ? (
-              <>
-                <div className="w-[20%]">
-                  <SidebarContaner />
-                </div>
-                <div className="w-[80%]">
-                  <CalcualtionContainer />
-                  <Inc_expContainer />
-                </div>
-              </>
-            ) : (
-              <AppRoutes />
-            )}
-            {/* <RouterProvider router={router} /> */}
+            <AppRoutes />
           </div>
-          {/* <Pie_Charts /> */}
         </ContextStore.Provider>
       </div>
     </>

@@ -43,6 +43,8 @@ const ContextStore = createContext({
   setTotalIncome: () => {},
   totalExpense: ``,
   setTotaExpense: () => {},
+  totalBudget: ``,
+  setTotalBudget: () => {},
 });
 
 export default ContextStore;

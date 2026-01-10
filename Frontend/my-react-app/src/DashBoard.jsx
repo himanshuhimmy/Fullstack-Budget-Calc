@@ -6,13 +6,8 @@ import Inc_expContainer from "./Inc_ExpData/Inc_expContainer";
 const DashBoard = () => {
   return (
     <div>
-      <div className="w-[20%]">
-        <SidebarContaner />
-      </div>
-      <div className="w-[80%]">
-        <CalcualtionContainer />
-        <Inc_expContainer />
-      </div>
+      <CalcualtionContainer />
+      <Inc_expContainer />
     </div>
   );
 };

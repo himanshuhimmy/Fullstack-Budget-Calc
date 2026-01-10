@@ -13,44 +13,18 @@ const CalcualtionContainer = () => {
     modalStatus,
     setAddCatogery,
     setActiveMonth,
-    filteredIncome,
-    filteredExpence,
     activeMonth,
     loggedIn,
     refresdData,
     totalIncome,
-    setTotalIncome,
     totalExpense,
-    setTotaExpense,
+    totalBudget,
   } = useContext(ContextStore);
 
   function HandleModalStatus() {
     setModalStatus(!modalStatus);
     setAddCatogery(true);
   }
-
-  let [totalBudget, setTotalBudget] = useState(0);
-
-  useEffect(() => {
-    let incomeTotal = 0;
-    let expenseTotal = 0;
-
-    if (filteredIncome) {
-      filteredIncome.forEach((el) => {
-        incomeTotal += Number(el.amount);
-      });
-    }
-
-    if (filteredExpence) {
-      filteredExpence.forEach((el) => {
-        expenseTotal += Number(el.amount);
-      });
-    }
-
-    setTotalIncome(incomeTotal);
-    setTotaExpense(expenseTotal);
-    setTotalBudget(incomeTotal - expenseTotal);
-  }, [filteredIncome, filteredExpence, activeMonth]);
 
   let [check, setCheck] = useState(true);
   function handleCheck(value) {

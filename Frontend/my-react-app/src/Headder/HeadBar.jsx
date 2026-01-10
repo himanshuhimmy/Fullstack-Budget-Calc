@@ -11,7 +11,7 @@ const HeadBar = () => {
         <div className="text-2xl text-white font-bold">Budget Calcualtor</div>
         <div className="flex gap-3">
           <NavLink
-            to={`/`}
+            to="/login"
             onClick={handleLoginState}
             className="px-4 p-2 bg-teal-100 rounded-2xl hover:bg-teal-300 transition-all duration-300 hover:text-white"
           >

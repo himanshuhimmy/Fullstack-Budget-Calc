@@ -26,7 +26,7 @@ const SidebarContaner = () => {
   function handleUserSelectedYear(value) {
     setActiveMonth(value);
   }
-
+  console.log(activeMonth);
   return (
     <div className="w-full mt-2 bg-teal-700 rounded-r-2xl  h-dvh text-center">
       <h1 className="pt-4 text-3xl text-white mb-3"> Months </h1>
